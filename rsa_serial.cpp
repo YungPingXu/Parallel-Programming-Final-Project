@@ -1,6 +1,8 @@
 #include <boost/multiprecision/cpp_int.hpp>
 #include <iostream>
 
+#include "CycleTimer.h"
+
 using namespace std;
 typedef boost::multiprecision::cpp_int bigint;
 
@@ -35,10 +37,14 @@ bigint mod_inverse(bigint a, bigint m) {
 int main() {
     bigint n = 3727977659171364769;
     bigint e = 81116269523;
+
+    double start = CycleTimer::currentSeconds();
     pair<bigint, bigint> pq_pairs = prime_factors(n);
     bigint p = pq_pairs.first, q = pq_pairs.second;
     bigint m = (p - 1) * (q - 1);
     bigint d = mod_inverse(e, m);
+    double end = CycleTimer::currentSeconds();
+
     cout << "Public key:" << endl;
     cout << "n = " << n << endl;
     cout << "e = " << e << endl;
@@ -47,5 +53,6 @@ int main() {
     cout << "q = " << q << endl;
     cout << "(p - 1) * (q - 1) = " << m << endl;
     cout << "d = " << d << endl;
+    cout << "Cracked in " << end - start << " seconds." << endl;
     return 0;
 }
