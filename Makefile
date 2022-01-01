@@ -1,2 +1,13 @@
-All:
-	g++ rsa_crack_big.cpp -std=c++17 -O3 -I /opt/homebrew/Cellar/boost/1.76.0/include -I /opt/homebrew/Cellar/libomp/13.0.0/include -o rsa_crack_big
+all: rsa_serial rsa_thread rsa_omp rsa_mpi
+
+rsa_serial:
+	g++ rsa_serial.cpp -std=c++17 -I"." -O3 -o rsa_serial
+
+rsa_thread:
+	g++ rsa_thread.cpp -std=c++17 -I"." -O3 -o rsa_thread -pthread
+
+rsa_omp:
+	g++ rsa_omp.cpp -std=c++17 -I"." -O3 -o rsa_omp -fopenmp
+
+rsa_mpi:
+	mpicxx rsa_mpi.cpp -std=c++17 -I"." -O3 -o rsa_mpi
