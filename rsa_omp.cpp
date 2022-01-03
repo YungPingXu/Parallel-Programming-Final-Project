@@ -1,33 +1,18 @@
 #include <omp.h>
+
 #include <boost/multiprecision/cpp_int.hpp>
 #include <iostream>
 
 #include "CycleTimer.h"
 
-#define NUM_THREAD 2
+#define NUM_THREAD 8
 
 using namespace std;
 typedef boost::multiprecision::cpp_int bigint;
 
-bool is_find = false;
-void try_devicion(bigint n, int s, bigint& p, bigint& q){
-    for(bigint i=s; i*i<= n; i+=(NUM_THREAD<<1)){
-        if(is_find) return;
-        if(n % i == 0){
-            is_find = true;
-            p = i;
-            q = n / i;
-            return;
-        }
-    }
-}
-
 pair<bigint, bigint> prime_factors(bigint n) {
-    if (!(n & 1)) {  // n % 2 == 0
-        return {2, n>>1};
-    }
-
-    is_find = false;
+    if (!(n & 1))  // n % 2 == 0
+        return {2, n >> 1};
     bigint p, q;
 
     // Bad 10 mins
@@ -44,16 +29,21 @@ pair<bigint, bigint> prime_factors(bigint n) {
     //         }
     //     }
     // }
-
+    int increase = NUM_THREAD << 1;
+    bool is_find = false;
     #pragma omp parallel num_threads(NUM_THREAD)
-    #pragma omp single
     {
-        for(int i=0; i<NUM_THREAD; i++){
-            #pragma omp task firstprivate(i)
-            try_devicion(n, 3+(i<<1), p, q);
+        int id = omp_get_thread_num();
+        for (bigint i = 3 + (id << 1); i * i <= n; i += increase) {
+            if (is_find) break;
+            if (n % i == 0) {
+                is_find = true;
+                p = i;
+                q = n / i;
+                break;
+            }
         }
     }
-
     return {p, q};
 }
 
