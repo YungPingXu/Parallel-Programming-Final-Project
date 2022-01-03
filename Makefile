@@ -11,3 +11,6 @@ rsa_omp: rsa_omp.cpp
 
 rsa_mpi: rsa_mpi.cpp
 	mpicxx rsa_mpi.cpp -std=c++17 -I"." -O3 -o rsa_mpi
+
+PollardRho_serial: PollardRho_serial.cpp
+	g++ PollardRho_serial.cpp -std=c++17 -I"." -O3 -o PollardRho_serial
