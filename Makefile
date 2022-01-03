@@ -1,4 +1,4 @@
-all: rsa_serial rsa_thread rsa_omp rsa_mpi
+all: rsa_serial rsa_thread rsa_omp rsa_mpi PollardRho_serial
 
 rsa_serial: rsa_serial.cpp
 	g++ rsa_serial.cpp -std=c++17 -I"." -O3 -o rsa_serial
