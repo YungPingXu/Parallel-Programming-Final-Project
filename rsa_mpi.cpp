@@ -27,6 +27,7 @@ pair<bigint, bigint> prime_factors(bigint n) {
     int sync = 100000000;
     if(mpi_rank == 0){
         int *nfound; // rank n found the solution
+        bool is_find = false;
         MPI_Alloc_mem(sizeof(int), MPI_INFO_NULL, &nfound);
         *nfound = -1;
         MPI_Win_create(nfound, sizeof(int), sizeof(int), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
@@ -34,7 +35,6 @@ pair<bigint, bigint> prime_factors(bigint n) {
         for (bigint i = 3+(mpi_rank<<1); i * i <= n; i += (mpi_size<<1)){
             if(0 > sync--){
                 sync += 100000000;
-                bool is_find = false;
                 MPI_Win_lock(MPI_LOCK_SHARED, 0, 0, win);
                 is_find = *nfound > 0;
                 MPI_Win_unlock(0, win);
@@ -45,6 +45,7 @@ pair<bigint, bigint> prime_factors(bigint n) {
                 MPI_Win_lock(MPI_LOCK_EXCLUSIVE, 0, 0, win);
                 *nfound = 0;
                 MPI_Win_unlock(0, win);
+                is_find = true;
 
                 p = i;
                 q = n / i;
@@ -52,12 +53,10 @@ pair<bigint, bigint> prime_factors(bigint n) {
             }
         }
 
-        while(1){ // wait until someone find tha answer
-            bool is_find = false;
+        while(!is_find){ // wait until someone find tha answer
             MPI_Win_lock(MPI_LOCK_SHARED, 0, 0, win);
             is_find = *nfound > 0;
             MPI_Win_unlock(0, win);
-            if(is_find) break;
         }
         if(*nfound > 0){
             int from = *nfound;
