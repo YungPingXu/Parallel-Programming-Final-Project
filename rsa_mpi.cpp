@@ -38,7 +38,7 @@ pair<bigint, bigint> prime_factors(bigint n) {
                 MPI_Win_lock(MPI_LOCK_SHARED, 0, 0, win);
                 is_find = *nfound > 0;
                 MPI_Win_unlock(0, win);
-                if(is_find) break
+                if(is_find) break;
             }
 
             if (n % i == 0){
