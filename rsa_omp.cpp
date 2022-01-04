@@ -15,20 +15,6 @@ pair<bigint, bigint> prime_factors(bigint n) {
         return {2, n >> 1};
     bigint p, q;
 
-    // Bad 10 mins
-    // #pragma omp parallel
-    // #pragma omp single
-    // for (bigint i = 3; i * i <= n; i += 2) {
-    //     if(is_find) break;
-    //     #pragma omp task firstprivate(i)
-    //     {
-    //         if (n % i == 0){
-    //             is_find = true;
-    //             p = i;
-    //             q = n / i;
-    //         }
-    //     }
-    // }
     int increase = NUM_THREAD << 1;
     bool is_find = false;
     #pragma omp parallel num_threads(NUM_THREAD)
