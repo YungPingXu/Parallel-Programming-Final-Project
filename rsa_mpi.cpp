@@ -131,8 +131,8 @@ bigint mod_inverse(bigint a, bigint m) {
 }
 
 int main() {
-    bigint n = 3727977659171364769;
-    bigint e = 81116269523;
+    bigint n("14282098901120359061");
+    bigint e = 65537;
 
     double start = CycleTimer::currentSeconds();
     pair<bigint, bigint> pq_pairs = prime_factors(n);
